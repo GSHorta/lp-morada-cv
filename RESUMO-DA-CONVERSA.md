@@ -53,7 +53,7 @@ Marca Morada e logo do CV vieram dos vetores oficiais (nunca gerados por IA). Fo
 
 - **Projeto:** `Downloads/LANDING PAGE/lp-morada-cv/` (abrir `index.html` ou rodar `servir-local.ps1`)
 - **Pacote:** `Downloads/LANDING PAGE/LP-MORADA-CV_MKT-713_2026-09-24.zip`
-- **GitHub:** https://github.com/GSHorta/lp-morada-cv (privado, branch `main`)
+- **GitHub:** https://github.com/GSHorta/lp-morada-cv (público, branch `main`)
 - **Detalhes técnicos e pendências de publicação:** `LEIA-ME.md`
 
 Atalhos de revisão: `index.html?mia=19` abre a conversa pouco antes do flip; `celular-mia.html?fundo=verde` deixa o celular em fundo chroma.
