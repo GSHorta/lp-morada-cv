@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Morada.ai + CV · Integração oficial</title>
+<meta name="description" content="A MIA qualifica seus leads no WhatsApp e entrega tudo no CV: conversa completa, qualificação e card no estágio certo do funil, em tempo real, pela API oficial. Baixe o guia de boas práticas.">
+<meta name="theme-color" content="#01040F">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Morada.ai">
+<meta property="og:title" content="Morada.ai + CV · Integração oficial">
+<meta property="og:description" content="A MIA qualifica no WhatsApp, o CV recebe tudo e o corretor começa do meio, não do zero. Baixe o guia de boas práticas.">
+<meta property="og:image" content="assets/og-morada-cv.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/mia-phone.css">
+<link rel="stylesheet" href="assets/guia-livro.css">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#01040F; --bg-2:#030A1F; --navy:#041B4D;
+  --blue:#0073FF; --royal:#0057B2; --cyan:#02CFFF; --green:#5EE6A8;
+  --ink:#F7FAFF; --ink-2:rgba(247,250,255,.72); --ink-3:rgba(247,250,255,.48);
+  --line:rgba(160,190,255,.13);
+  --ff-d:"Outfit",system-ui,sans-serif; --ff-b:"Lato",system-ui,sans-serif;
+  --wrap:1200px; --gut:clamp(20px,4vw,40px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--ff-b);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- fundo vivo: manchas azuis desfocadas passeando atrás da página inteira ---------- */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%;will-change:transform;animation:auroraA 26s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:80vmax;height:80vmax;left:-30vmax;top:-35vmax;background:radial-gradient(closest-side,rgba(0,115,255,.32),rgba(0,115,255,.11) 55%,transparent)}
+.aurora i:nth-child(2){width:72vmax;height:72vmax;right:-30vmax;top:4vh;background:radial-gradient(closest-side,rgba(0,87,178,.38),rgba(0,87,178,.12) 55%,transparent);animation-name:auroraB;animation-duration:32s}
+.aurora i:nth-child(3){width:62vmax;height:62vmax;left:16vw;bottom:-40vmax;background:radial-gradient(closest-side,rgba(2,207,255,.16),rgba(2,207,255,.05) 55%,transparent);animation-name:auroraC;animation-duration:36s}
+.aurora i:nth-child(4){width:56vmax;height:56vmax;left:38vw;top:-30vmax;background:radial-gradient(closest-side,rgba(52,76,236,.26),rgba(52,76,236,.08) 55%,transparent);animation-name:auroraD;animation-duration:29s}
+@keyframes auroraA{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(24vw,20vh,0) scale(1.18)}100%{transform:translate3d(8vw,44vh,0) scale(.92)}}
+@keyframes auroraB{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-28vw,26vh,0) scale(.9)}100%{transform:translate3d(-10vw,-12vh,0) scale(1.16)}}
+@keyframes auroraC{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(22vw,-32vh,0) scale(1.22)}100%{transform:translate3d(-20vw,-12vh,0) scale(1)}}
+@keyframes auroraD{0%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(-22vw,32vh,0) scale(.86)}100%{transform:translate3d(14vw,56vh,0) scale(1.12)}}
+
+/* ---------- base ---------- */
+.sec{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:clamp(104px,13vh,150px) 0 clamp(80px,11vh,130px);overflow:hidden;isolation:isolate}
+/* brilhos vazam para a rolagem vizinha em vez de cortar em linha reta */
+@supports (overflow:clip){.sec{overflow:visible;overflow-x:clip}}
+.wrap{position:relative;z-index:2;width:100%;max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+.grid-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(150,180,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(150,180,255,.05) 1px,transparent 1px);background-size:88px 88px;background-position:center top;-webkit-mask-image:radial-gradient(ellipse 60% 55% at var(--gx,50%) var(--gy,45%),#000 10%,transparent 72%);mask-image:radial-gradient(ellipse 60% 55% at var(--gx,50%) var(--gy,45%),#000 10%,transparent 72%)}
+.glow{position:absolute;z-index:-1;pointer-events:none;border-radius:50%}
+.kicker{display:inline-flex;align-items:center;gap:10px;margin:0;font:600 13px/1 var(--ff-d);letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.h1,.h2{font-family:var(--ff-d);font-weight:300;margin:22px 0 0;text-wrap:balance}
+.h1{font-size:clamp(44px,4.7vw,68px);line-height:.99;letter-spacing:-.03em}
+.h2{font-size:clamp(34px,3.7vw,54px);line-height:1.05;letter-spacing:-.025em}
+.h1 b,.h2 b{font-weight:700}
+.ln{display:block}
+.hl{background:linear-gradient(92deg,#02CFFF 0%,#3C9CFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dim{color:rgba(247,250,255,.46)}
+.lead{margin:22px 0 0;font:300 clamp(17px,1.3vw,19px)/1.65 var(--ff-b);color:var(--ink-2);max-width:34em}
+.lead strong{font-weight:700;color:var(--ink)}
+
+.btn{--h:54px;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:var(--h);padding:0 26px;border:0;border-radius:14px;font:600 16px/1 var(--ff-d);letter-spacing:.005em;cursor:pointer;white-space:nowrap;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s}
+.btn svg{width:18px;height:18px;flex:none}
+.btn--primary{color:#fff;background:linear-gradient(180deg,#2C8CFF 0%,#0073FF 55%,#0064E0 100%);box-shadow:inset 0 0 0 1px rgba(140,200,255,.55),inset 0 1px 0 rgba(255,255,255,.4),0 12px 30px -8px rgba(0,115,255,.8),0 0 44px -4px rgba(0,115,255,.45)}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(160,215,255,.7),inset 0 1px 0 rgba(255,255,255,.45),0 18px 36px -8px rgba(0,115,255,.9),0 0 60px -4px rgba(0,115,255,.6)}
+.btn--ghost{color:var(--ink);background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(160,190,255,.24)}
+.btn--ghost:hover{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(160,200,255,.42)}
+.btn--white{color:#04122E;background:#fff;box-shadow:0 14px 34px -10px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.6)}
+.btn--white:hover{transform:translateY(-2px)}
+.btn--white .wa{color:#1FAF55}
+.link{display:inline-flex;align-items:center;gap:8px;font:500 15px var(--ff-d);color:var(--ink-2);transition:color .2s}
+.link:hover{color:var(--ink)}
+.link svg{width:16px;height:16px;transition:transform .2s}
+.link:hover svg{transform:translateX(3px)}
+
+.glass{position:relative;background:linear-gradient(180deg,rgba(24,40,80,.62),rgba(9,17,38,.72));border:1px solid rgba(150,185,255,.17);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 30px 60px -24px rgba(0,0,0,.75)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:14px;font:500 12px var(--ff-d);color:var(--ink);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(160,190,255,.2);white-space:nowrap}
+.chip svg{width:13px;height:13px;color:var(--cyan)}
+.chip--on{background:rgba(2,207,255,.1);box-shadow:inset 0 0 0 1px rgba(2,207,255,.35);color:#CFF4FF}
+
+/* ---------- reveal ---------- */
+.js [data-r]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+.js [data-r].is-in{opacity:1;transform:none}
+.is-off *,.is-off *::before,.is-off *::after{animation-play-state:paused!important}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:60;transform:translateZ(0);transition:background .3s,box-shadow .3s}
+.nav.is-scrolled{background:rgba(1,4,15,.74);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.nav__in{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut);height:78px;display:flex;align-items:center;gap:36px}
+.nav__brand{display:flex;align-items:center;gap:14px}
+.nav__brand img{height:23px;width:auto}
+.nav__brand .x{width:1px;height:22px;background:rgba(200,215,255,.25)}
+.nav__brand .cv{height:25px}
+.nav__links{display:flex;gap:30px;margin-left:auto;font:400 15px var(--ff-d);color:var(--ink-2)}
+.nav__links a{transition:color .2s}
+.nav__links a:hover{color:var(--ink)}
+.nav .btn{--h:44px;padding:0 20px;font-size:15px;border-radius:12px}
+
+/* ---------- side dots ---------- */
+.dots{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:16px}
+.dots a{position:relative;display:block;width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(200,220,255,.45);transition:background .3s,box-shadow .3s}
+.dots a.is-on{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.dots a span{position:absolute;right:22px;top:50%;transform:translate(6px,-50%);white-space:nowrap;font:500 12px var(--ff-d);letter-spacing:.04em;color:var(--ink-2);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.dots a:hover span,.dots a:focus-visible span{opacity:1;transform:translate(0,-50%)}
+
+/* ================= 01 HERO ================= */
+.hero{--gx:70%;--gy:40%}
+.hero .glow--a{width:900px;height:700px;right:-260px;top:-160px;background:radial-gradient(circle,rgba(0,100,255,.26),transparent 62%)}
+.hero .glow--b{width:700px;height:500px;left:-300px;bottom:-240px;background:radial-gradient(circle,rgba(0,87,178,.22),transparent 65%)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:32px;align-items:center}
+.hero__cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.hero__rule{height:1px;max-width:520px;margin:44px 0 26px;background:linear-gradient(90deg,rgba(160,190,255,.3),transparent)}
+.facts{display:flex;flex-wrap:wrap;gap:18px 0;margin:0;padding:0;list-style:none}
+.facts li{padding:0 30px;border-left:1px solid var(--line)}
+.facts li:first-child{padding-left:0;border-left:0}
+.facts b{display:block;font:600 23px/1.1 var(--ff-d);letter-spacing:-.01em}
+.facts span{display:block;margin-top:6px;font:400 13.5px/1.3 var(--ff-b);color:var(--ink-3)}
+
+.hv{position:relative;width:100%;max-width:560px;height:640px;justify-self:end}
+/* "A" em linha: fundo do hero, gigante, sangrando pelo topo e pela direita, escala com a tela */
+.hero__bg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent)}
+.hero__graf{position:absolute;max-width:none;width:max(125vw,1400px);height:auto;aspect-ratio:358.7/421.13;left:50%;top:calc(max(125vw,1400px) * -.387);transform:translateX(-50%);fill:none;stroke:rgba(255,255,255,.12);overflow:visible}
+.hv__floor{position:absolute;z-index:0;left:6%;right:6%;bottom:-6px;height:130px;background:radial-gradient(ellipse at center,rgba(0,115,255,.42),transparent 70%)}
+.hv__phone{position:absolute;z-index:2;left:2%;top:14px}
+.hv__phone.mia{--orbit-x:0px;--orbit-s:.9}
+.hv__cv{position:absolute;z-index:4;right:max(-84px,min(-24px,calc(576px - 50vw)));bottom:22px;width:252px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.js .hv__cv:not(.is-on){opacity:0;transform:translateY(14px)}
+.cvcard [data-cv].is-new{animation:cvFlash 1.4s var(--ease)}
+@keyframes cvFlash{0%{color:#02CFFF;text-shadow:0 0 14px rgba(2,207,255,.9)}100%{text-shadow:0 0 0 transparent}}
+.kv dd.is-empty,.stages__lb b.is-empty{color:var(--ink-3)}
+.cvcard.is-done .cvcard__f{color:var(--green)}
+.hv__cv.is-on{opacity:1;transform:none}
+
+.cvcard{padding:15px 16px 14px}
+.cvcard__h{display:flex;align-items:center;gap:10px}
+.cvcard__h .sy{width:30px;height:30px;flex:none}
+.cvcard__h .t{font:600 13.5px/1.2 var(--ff-d)}
+.cvcard__h .t small{display:block;font:400 11px/1.3 var(--ff-b);color:var(--ink-3)}
+.now{margin-left:auto;display:flex;align-items:center;gap:6px;font:500 10.5px var(--ff-d);color:var(--green)}
+.now::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:beat 1.6s infinite}
+@keyframes beat{50%{opacity:.35}}
+.stages{margin:14px 0 4px}
+.stages__bar{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.stages__bar i{height:5px;border-radius:3px;background:rgba(255,255,255,.1);transition:background .5s,box-shadow .5s}
+.stages__bar i.on{background:linear-gradient(90deg,#0073FF,#02CFFF);box-shadow:0 0 10px rgba(2,207,255,.5)}
+.stages__lb{display:flex;justify-content:space-between;margin-top:7px;font:400 11px var(--ff-b);color:var(--ink-3)}
+.stages__lb b{font:600 11px var(--ff-d);color:var(--cyan)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;margin:10px 0 0;padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kv dt{font:400 12px/1.35 var(--ff-b);color:var(--ink-3)}
+.kv dd{margin:0;text-align:right;font:500 12.5px/1.35 var(--ff-d)}
+.cvcard__f{display:flex;align-items:center;gap:8px;margin-top:11px;font:500 12px var(--ff-d);color:var(--ink-2)}
+.cvcard__f svg{width:15px;height:15px;color:var(--green)}
+
+/* ================= 02 INTEGRAÇÃO ================= */
+.intg{--gy:62%;text-align:center}
+.intg .glow--a{width:1000px;height:800px;left:50%;top:48%;transform:translate(-50%,-30%);background:radial-gradient(circle,rgba(0,90,255,.22),transparent 60%)}
+.intg{padding-top:clamp(96px,11vh,140px)}
+.intg .lead{margin-left:auto;margin-right:auto;max-width:47em}
+.hub{position:relative;max-width:1040px;margin:50px auto 0;aspect-ratio:1040/480}
+.hub__lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}
+.hub__card{position:absolute;z-index:2;width:28.846%;height:41.667%;display:flex;flex-direction:column;padding:18px 18px 16px;text-align:left;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 6px rgba(30,60,130,.16),0 0 0 7px rgba(150,185,255,.07),0 30px 60px -24px rgba(0,0,0,.75)}
+.hub__card--tl{left:0;top:4.1667%}
+.hub__card--bl{left:0;top:54.167%}
+.hub__card--tr{right:0;top:4.1667%}
+.hub__card--br{right:0;top:54.167%}
+.hub__t{display:flex;align-items:center;gap:9px;margin:0;font:500 17px/1.2 var(--ff-d)}
+.hub__t svg{width:18px;height:18px;color:var(--cyan)}
+.hub__card p{margin:6px 0 0;font:400 13px/1.5 var(--ff-b);color:var(--ink-2)}
+.hub__x{margin-top:auto}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.flows{display:grid;gap:7px}
+.flow{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(160,190,255,.12);font:400 12px/1.3 var(--ff-b);color:var(--ink-2)}
+.flow b{display:flex;align-items:center;gap:5px;font:600 11.5px var(--ff-d);color:var(--ink)}
+.flow b svg{width:12px;height:12px;color:var(--cyan)}
+.feed{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.feed li{display:flex;align-items:center;gap:9px;font:400 12.5px/1.3 var(--ff-b);color:var(--ink-2)}
+.feed li::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.feed li em{margin-left:auto;font:500 10.5px var(--ff-d);font-style:normal;color:var(--green)}
+.direct{display:flex;align-items:center;gap:10px}
+.direct svg.b{width:34px;height:34px;flex:none}
+.direct .wire{position:relative;flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,#0073FF,#02CFFF,#00AF86);box-shadow:0 0 12px rgba(2,207,255,.6)}
+.direct .wire::after{content:"conexão direta";position:absolute;left:50%;top:-22px;transform:translateX(-50%);white-space:nowrap;font:600 10.5px var(--ff-d);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.direct .wire i{position:absolute;left:0;right:0;top:50%;height:8px;margin-top:-4px;animation:slide 2.6s ease-in-out infinite alternate;will-change:transform}
+.direct .wire i::after{content:"";position:absolute;left:0;top:0;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #02CFFF,0 0 3px #fff}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(calc(100% - 8px))}}
+
+.orb{position:absolute;z-index:1;left:35.577%;top:18.75%;width:28.846%;aspect-ratio:1}
+.orb__halo{position:absolute;inset:-46%;border-radius:50%;background:radial-gradient(circle,rgba(0,110,255,.4) 0%,rgba(0,80,255,.14) 36%,transparent 64%)}
+.orb__l{position:absolute;left:-18%;top:-18%;width:136%;max-width:none;height:136%;overflow:visible}
+.orb__vid{position:absolute;left:1.05%;top:1.05%;width:97.9%;height:97.9%;border-radius:50%;clip-path:circle(50%);object-fit:cover;background:#061656}
+.orb .sw{opacity:.5}
+.sw{animation:spin var(--s,20s) linear infinite;will-change:transform}
+.sw--r{animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb__lock{position:absolute;left:50%;top:0;transform:translate(-50%,calc(-100% - 8px));display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:40px;background:rgba(4,14,44,.78);box-shadow:inset 0 0 0 1px rgba(160,210,255,.28),0 10px 30px rgba(0,0,0,.4)}
+.orb__lock svg.b{width:42px;height:42px}
+.orb__lock .sync{width:20px;height:20px;color:#BFE6FF;animation:spin 6s linear infinite}
+
+/* ================= 03 BENEFÍCIOS ================= */
+.ben{--gx:30%;--gy:70%}
+.ben .glow--a{width:900px;height:600px;left:-200px;bottom:-180px;background:radial-gradient(circle,rgba(0,87,178,.26),transparent 62%)}
+.ben__head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:40px;align-items:end}
+.ben__head .lead{justify-self:end;margin:0;max-width:27em;font-size:17px}
+.ben__grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:76px;border-radius:24px;background:linear-gradient(180deg,rgba(20,34,70,.5),rgba(8,14,32,.6));border:1px solid rgba(150,185,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.bcard{position:relative;display:flex;flex-direction:column;min-height:348px;padding:34px 28px 30px;outline:none;cursor:default}
+.bcard::before{content:"";position:absolute;left:0;top:30px;bottom:30px;width:1px;background:var(--line);transition:opacity .3s}
+.bcard:first-child::before{display:none}
+.bcard::after{content:"";position:absolute;z-index:0;inset:-26px 0;border-radius:24px;opacity:0;transform:scale(.97);background:radial-gradient(120% 80% at 20% 0%,rgba(120,200,255,.45),transparent 55%),linear-gradient(165deg,#1C84FF 0%,#0073FF 42%,#0057B2 100%);box-shadow:inset 0 0 0 1px rgba(170,215,255,.5),0 34px 70px -20px rgba(0,115,255,.65),0 0 60px -10px rgba(0,115,255,.5);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.bcard > *{position:relative;z-index:1}
+.bcard.is-active::after{opacity:1;transform:none}
+.bcard.is-active::before,.bcard.is-active + .bcard::before{opacity:0}
+.bcard__n{font:600 21px/1 var(--ff-d);color:var(--cyan);transition:color .3s}
+.bcard__ic{position:absolute;right:26px;top:26px;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;color:var(--cyan);background:rgba(2,207,255,.08);box-shadow:inset 0 0 0 1px rgba(2,207,255,.22);transition:color .3s,background .3s,box-shadow .3s}
+.bcard__ic svg{width:20px;height:20px}
+.bcard h3{margin:34px 0 14px;font:600 21px/1.22 var(--ff-d);letter-spacing:-.01em}
+.bcard p{margin:0;font:400 15px/1.62 var(--ff-b);color:var(--ink-2);transition:color .3s}
+.bcard__tag{margin-top:auto;padding-top:26px;font:600 11.5px/1.4 var(--ff-d);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);transition:color .3s}
+.bcard.is-active .bcard__n{color:#fff}
+.bcard.is-active p{color:rgba(255,255,255,.9)}
+.bcard.is-active .bcard__tag{color:rgba(255,255,255,.78)}
+.bcard.is-active .bcard__ic{color:#fff;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+
+/* ================= 04 COMO FUNCIONA ================= */
+.how{--gx:28%;--gy:55%}
+.how .glow--a{width:800px;height:700px;left:-220px;top:10%;background:radial-gradient(circle,rgba(0,100,255,.2),transparent 62%)}
+.how .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+.fv{position:relative;width:100%;max-width:560px;aspect-ratio:1}
+.fv__svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fcard{position:absolute;z-index:2;padding:14px 16px 15px}
+.fcard--1{left:0;top:26%;width:47%}
+.fcard--2{left:33%;top:69%;width:58%}
+.fcard--3{left:54%;top:1%;width:42%}
+.fcard__l{display:flex;align-items:center;gap:9px;margin:0;font:500 11px/1 var(--ff-d);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.fcard__l::before{content:"";width:2px;height:13px;border-radius:2px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.fcard__v{margin:9px 0 0;font:600 17px/1.2 var(--ff-d)}
+.fcard .chips{margin-top:10px;gap:6px}
+.fcard .chip{height:24px;padding:0 9px;font-size:11px}
+.media{display:flex;gap:14px;margin-top:10px;font:500 12px var(--ff-d);color:var(--ink-2)}
+.media span{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.media svg{width:14px;height:14px;color:var(--cyan)}
+.tl{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.tl li{position:relative;display:flex;align-items:center;gap:9px;font:400 12.5px/1.3 var(--ff-b);color:var(--ink-2)}
+.tl li svg{width:14px;height:14px;flex:none;color:var(--green)}
+.tl li b{margin-left:auto;display:inline-grid;place-items:center;min-width:26px;height:20px;padding:0 6px;border-radius:6px;font:700 11.5px var(--ff-d);color:#04122E;background:linear-gradient(90deg,#02CFFF,#5EE6A8)}
+.steps{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:26px;counter-reset:s}
+.step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:18px}
+.step__n{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;font:600 16px var(--ff-d);color:var(--cyan);background:rgba(2,207,255,.06);box-shadow:inset 0 0 0 1px rgba(2,207,255,.35)}
+.step h3{margin:3px 0 6px;font:600 18px/1.3 var(--ff-d)}
+.step p{margin:0;font:400 15px/1.62 var(--ff-b);color:var(--ink-2)}
+.how__cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:40px}
+
+/* ================= 05 GUIA ================= */
+.guia{--gx:50%;--gy:30%;align-items:flex-start;flex-direction:column}
+.guia .glow--a{width:900px;height:800px;left:-260px;top:-60px;background:radial-gradient(circle,rgba(0,100,255,.26),transparent 60%)}
+.guia__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.cover-wrap{position:relative;z-index:3;display:flex;justify-content:center;padding:34px 0 74px}
+
+.form{margin-top:30px;padding:26px 26px 22px}
+.form__t{margin:0 0 18px;font:600 19px/1.25 var(--ff-d)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fld label{display:block;margin-bottom:7px;font:500 13px var(--ff-d);color:var(--ink-2)}
+.fld label span{color:var(--cyan)}
+.fld input{width:100%;height:50px;padding:0 15px;border-radius:12px;border:0;outline:0;background:rgba(3,9,26,.6);box-shadow:inset 0 0 0 1px rgba(160,190,255,.2);font:400 15px var(--ff-b);color:var(--ink);transition:box-shadow .2s,background .2s}
+.fld input::placeholder{color:rgba(247,250,255,.34)}
+.fld input:focus{background:rgba(3,9,26,.85);box-shadow:inset 0 0 0 1.5px var(--cyan),0 0 0 4px rgba(2,207,255,.12)}
+.fld input:user-invalid{box-shadow:inset 0 0 0 1.5px #FF7A8A}
+.form .btn{width:100%;margin-top:20px}
+.form__legal{margin:14px 0 0;font:400 12.5px/1.5 var(--ff-b);color:var(--ink-3)}
+.form__legal a{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}
+.form__ok{text-align:left}
+.form__ok .ic{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;color:#04122E;background:linear-gradient(135deg,#02CFFF,#5EE6A8);box-shadow:0 10px 30px -8px rgba(2,207,255,.6)}
+.form__ok .ic svg{width:24px;height:24px}
+.form__ok h3{margin:18px 0 6px;font:600 22px/1.25 var(--ff-d)}
+.form__ok p{margin:0;color:var(--ink-2);font-size:15px}
+.form__ok .btn{margin-top:22px}
+.form__ok .link{margin-top:16px}
+
+.final{position:relative;margin-top:clamp(90px,12vh,130px);padding:clamp(34px,5vw,60px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px 40px;align-items:center;overflow:hidden;border-radius:28px;background:radial-gradient(90% 150% at 100% 0%,rgba(0,115,255,.5),transparent 55%),radial-gradient(60% 120% at 0% 100%,rgba(2,207,255,.12),transparent 60%),linear-gradient(180deg,#0A1A45 0%,#051030 100%);box-shadow:inset 0 0 0 1px rgba(150,190,255,.22),0 40px 90px -40px rgba(0,115,255,.5)}
+.final__graf{position:absolute;right:-60px;top:-120px;height:460px;width:auto;fill:none;stroke:rgba(255,255,255,.12);overflow:visible;pointer-events:none}
+.final .h2{margin-top:16px;font-size:clamp(30px,3.2vw,46px)}
+.final .lead{margin-top:14px;font-size:17px}
+.final .btn{position:relative;--h:58px;padding:0 28px;font-size:16.5px}
+
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 30px;margin-top:70px;padding-top:28px;border-top:1px solid var(--line);font:400 13px/1.5 var(--ff-b);color:var(--ink-3)}
+.foot img{height:20px;width:auto}
+.foot nav{display:flex;flex-wrap:wrap;gap:22px}
+.foot nav a:hover{color:var(--ink)}
+
+/* ---------- mobile CTA ---------- */
+.mcta{position:fixed;z-index:55;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));display:none;gap:10px}
+.mcta .btn{flex:1}
+.mcta .btn--ghost{flex:none;width:54px;padding:0;background:rgba(6,14,36,.85)}
+
+/* ================= responsivo ================= */
+@media (max-width:1280px){.dots{display:none}}
+@media (min-width:1025px) and (max-width:1279px){.cover-wrap .livro{--s:.66}}
+@media (max-width:1100px){
+  .hub{aspect-ratio:auto;display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px}
+  .hub__lines{display:none}
+  .orb{position:relative;left:auto;top:auto;grid-column:1/-1;justify-self:center;width:250px;margin:86px 0 40px}
+  .hub__card{position:relative;left:auto!important;right:auto!important;top:auto!important;width:auto;height:auto;min-height:200px}
+  .hub__x{margin-top:18px}
+}
+@media (max-width:1024px){
+  .hero .wrap,.how .wrap,.guia__grid{grid-template-columns:1fr}
+  .hv{justify-self:center;margin-top:24px}
+  .hv__cv{right:-60px}
+  .ben__grid{grid-template-columns:1fr 1fr}
+  .bcard:nth-child(3)::before{display:none}
+  .bcard:nth-child(n+3){border-top:1px solid var(--line)}
+  .bcard::after{inset:0}
+  .bcard.is-active + .bcard::before{opacity:1}
+  .fv{margin:0 auto;order:2}
+  .how__txt{order:1}
+  .cover-wrap{order:2}
+}
+@media (max-width:900px){
+  .nav__links{display:none}
+  .nav .btn{margin-left:auto}
+  .mcta{display:flex;transform:translateY(160%);transition:transform .4s var(--ease)}
+  .mcta.is-on{transform:none}
+  .ben__head{grid-template-columns:1fr;gap:20px}
+  .ben__head .lead{justify-self:start}
+  .final{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .sec{min-height:0;padding:96px 0 64px}
+  .intg{padding-top:72px}
+  .h1{font-size:clamp(36px,10.2vw,44px)}
+  .nav__in{height:64px;gap:16px}
+  .nav__brand img{height:19px}
+  .nav__brand .cv{height:21px}
+  .nav__brand .x{height:18px}
+  .nav .btn{--h:40px;padding:0 14px;font-size:14px}
+  .nav .btn svg{display:none}
+  .hero__cta .btn{flex:1 1 100%}
+  .facts li{padding:0 14px}
+  .facts b{font-size:18px}
+  .facts span{font-size:12px}
+  .hv{height:850px;max-width:360px;transform:scale(.84);transform-origin:top center;margin-bottom:-136px}
+  .hv__phone{left:50%;margin-left:-144px}
+  .hv__phone.mia{--orbit-x:0px;--orbit-s:.92}
+  .hv__cv{right:auto;left:50%;bottom:0;margin-left:-116px;width:260px}
+  .hero__graf{width:300vw;top:calc(300vw * -.1)}
+  .hub{grid-template-columns:1fr}
+  .orb{width:220px}
+  .hub__card{min-height:0}
+  .ben__grid{grid-template-columns:1fr;margin-top:48px}
+  .bcard{min-height:0;padding:28px 24px 26px}
+  .bcard::before{display:none}
+  .bcard + .bcard{border-top:1px solid var(--line)}
+  .bcard h3{margin-top:26px}
+  .fv{display:none}
+  .fields{grid-template-columns:1fr}
+  .cover-wrap{height:calc(526px * .6 + 64px);padding:8px 0 0}
+  .cover-wrap .livro{--s:.64;transform:scale(.6);transform-origin:top center}
+  .form{padding:22px 18px 18px}
+  .final .btn{width:100%}
+  .foot{flex-direction:column;align-items:flex-start;padding-bottom:80px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .js [data-r]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<!-- ============ sprite ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="cvGrad" x1="33.2" y1="39.6" x2="132.4" y2="130.2" gradientTransform="translate(0 172) scale(1 -1)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#24695b"/><stop offset="1" stop-color="#00af86"/></linearGradient>
+    <linearGradient id="swGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8FD0FF" stop-opacity="0"/><stop offset=".5" stop-color="#C4E8FF" stop-opacity=".95"/><stop offset="1" stop-color="#8FD0FF" stop-opacity="0"/></linearGradient>
+    <radialGradient id="orbFill" cx="46%" cy="42%" r="56%"><stop offset="0" stop-color="#1A55E0"/><stop offset=".45" stop-color="#0A2A8E"/><stop offset=".8" stop-color="#061656"/><stop offset="1" stop-color="#041042"/></radialGradient>
+    <radialGradient id="orbRim" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="#1E6BFF" stop-opacity="0"/><stop offset=".93" stop-color="#2E86FF" stop-opacity=".55"/><stop offset="1" stop-color="#9ED4FF" stop-opacity=".95"/></radialGradient>
+    <linearGradient id="orbitGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0057B2" stop-opacity=".2"/><stop offset=".45" stop-color="#0073FF"/><stop offset="1" stop-color="#02CFFF"/></linearGradient>
+    <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0057B2" stop-opacity="0"/><stop offset=".25" stop-color="#0073FF"/><stop offset=".7" stop-color="#02CFFF"/><stop offset="1" stop-color="#5EE6A8" stop-opacity=".2"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glowL" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+    <radialGradient id="pulseG"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#BFE9FF"/><stop offset="1" stop-color="#02CFFF" stop-opacity="0"/></radialGradient>
+  </defs>
+  <!-- marcas (arquivos oficiais) -->
+  <symbol id="s-ai" viewBox="556.41 47.29 109 109"><circle cx="610.91" cy="101.79" r="54.5" fill="#0073ff"/><path fill="#fff" d="M597.31,79.21h10.19l16.57,42.96h-9.44l-3.06-8.34h-18.58l-3,8.34h-9.32l16.64-42.96ZM608.63,105.92l-6.32-17.25-6.38,17.25h12.7Z"/><path fill="#fff" d="M628.54,79.21h8.63v42.96h-8.63v-42.96Z"/></symbol>
+  <symbol id="s-cv" viewBox="15 15 140 140"><path fill="url(#cvGrad)" d="M148.5,17.4H56.4c-21.5,0-39,17.5-39,39v92.6c0,1.9,1.5,3.4,3.4,3.4h93.5c21,0,38.1-16.9,38.1-37.8V21.4c0-2.2-1.8-3.9-3.9-3.9h0ZM84.9,118.6l-45-33.7,45-33.7,45,33.7s-45,33.7-45,33.7Z"/><polygon fill="#24695b" points="152.4 68 152.4 101.8 84.9 152.4 84.9 118.6 129.9 84.9 152.4 68"/><polygon fill="#24695b" points="84.9 17.4 84.9 51.2 39.9 84.9 17.4 101.8 17.4 68 84.9 17.4"/><polygon fill="#41b28e" points="84.9 118.6 84.9 152.4 17.4 101.8 17.4 68 39.9 84.9 84.9 118.6"/></symbol>
+  <symbol id="s-a" viewBox="0 0 358.7 421.13"><path vector-effect="non-scaling-stroke" stroke-width="1" d="M358.52,202.56c-16.18,6.4-30.94,12.13-37.15,14.2-7.34,2.35-14.48,4.7-21.44,7.05,2.35,15.33,3.67,27.27,4.33,33.86,7.71,70.82-21.35,149.54-92.07,162.52-4.14.66-8.28.94-12.32.94-16.93,0-32.35-5.55-45.61-16.27-20.69-16.65-34.05-44.86-35.93-75.33-5.27-77.12,52.29-117.19,115.21-143.43-13.83-61.7-35.36-109.66-58.69-127.44-10.91-1.5-32.16,26.99-41.19,39.5l-1.32,1.88c-44.3,64.05-68.37,142.48-72.89,238.7-.94,19.19-16.83,34.23-36.02,34.23H0C0,248.74,27.65,148.48,84.46,66.47l1.69-2.35c19.37-26.71,59.63-82.29,114.27-58.22l4.33,2.35c44.67,29.44,70.07,98.94,84.17,157.91,1.6-.56,8.84-3.39,18.06-7.05,24.73-9.88,51.73,8.37,51.73,35.08v8.65l-.19-.28ZM243.78,245.36c-43.36,19.75-69.5,43.07-66.96,80.41.85,13.83,6.68,27.56,14.3,33.76,3.48,2.82,6.87,3.76,11.38,3.1,38.47-7.05,47.12-64.33,43.36-98.85-.66-6.21-1.32-12.32-2.07-18.43h0Z"/></symbol>
+  <!-- ícones -->
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h15M13.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z"/><path d="M8.8 12.2l2.2 2.2 4.3-4.4"/></g></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h15m0 0-3.5-3.5M19 8l-3.5 3.5M20 16H5m0 0 3.5-3.5M5 16l3.5 3.5"/></g></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10a7.7 7.7 0 0 1 13.4-3.6L20 8.5M20 4v4.5h-4.5"/><path d="M19.5 14a7.7 7.7 0 0 1-13.4 3.6L4 15.5M4 20v-4.5h4.5"/></g></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.6"/><path d="M3 20c.4-3.5 3.1-6 6.5-6 1.6 0 3 .5 4.1 1.4"/><path d="M15.5 17.2l2 2 4-4.2"/></g></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.6a8 8 0 0 1-11.9 7L4 20l1.3-4.3a8 8 0 1 1 15.2-4.1z"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01"/></g></symbol>
+  <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M3.5 5h17l-6.5 8v6l-4-2v-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M20 16.5l-5-5-8.5 8"/></g></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.28-.2-.57-.35M12.05 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88M20.46 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.17-3.48-8.42"/></symbol>
+</svg>
+
+<!-- ============ nav ============ -->
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="nav__brand" href="#inicio" aria-label="Morada.ai + CV, voltar ao início">
+      <img src="assets/marca-morada.svg" alt="Morada.ai" width="123" height="23">
+      <i class="x" aria-hidden="true"></i>
+      <img class="cv" src="assets/cv-logo.svg" alt="CV" width="94" height="25">
+    </a>
+    <nav class="nav__links" aria-label="Seções">
+      <a href="#integracao">A integração</a>
+      <a href="#beneficios">Benefícios</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#guia">Guia</a>
+    </nav>
+    <a class="btn btn--primary" href="#guia" data-cta="nav"><svg aria-hidden="true"><use href="#i-down"/></svg>Baixar o guia</a>
+  </div>
+</header>
+
+<nav class="dots" aria-label="Rolagens da página">
+  <a href="#inicio" class="is-on"><span>01 · Início</span></a>
+  <a href="#integracao"><span>02 · A integração</span></a>
+  <a href="#beneficios"><span>03 · Benefícios</span></a>
+  <a href="#como-funciona"><span>04 · Como funciona</span></a>
+  <a href="#guia"><span>05 · Guia</span></a>
+</nav>
+
+<main>
+
+<!-- ================= 01 · HERO ================= -->
+<section class="sec hero" id="inicio" aria-labelledby="h-hero">
+  <div class="grid-bg"></div><div class="glow glow--a"></div><div class="glow glow--b"></div>
+  <div class="hero__bg" aria-hidden="true"><svg class="hero__graf" viewBox="0 0 358.7 421.13"><use href="#s-a" width="358.7" height="421.13"/></svg></div>
+  <div class="wrap">
+    <div class="hero__txt">
+      <p class="kicker" data-r>Integração oficial Morada.ai + CV</p>
+      <h1 class="h1" id="h-hero" data-r style="--d:.08s">
+        <span class="ln">O corretor começa</span>
+        <span class="ln"><b class="hl">do meio,</b> <span class="dim">não</span></span>
+        <span class="ln dim">do zero.</span>
+      </h1>
+      <p class="lead" data-r style="--d:.16s">A MIA atende e qualifica seus leads no WhatsApp e entrega cada um no CV com a conversa completa, os dados de qualificação e o card no estágio certo do funil. <strong>Em tempo real, pela API oficial.</strong></p>
+      <div class="hero__cta" data-r style="--d:.24s">
+        <a class="btn btn--primary" href="#guia" data-cta="hero"><svg aria-hidden="true"><use href="#i-down"/></svg>Baixar o guia gratuito</a>
+        <a class="btn btn--ghost" data-wa="hero"><svg aria-hidden="true"><use href="#i-wa"/></svg>Falar com a MIA</a>
+      </div>
+      <div class="hero__rule" data-r style="--d:.3s"></div>
+      <ul class="facts" data-r style="--d:.36s">
+        <li><b>CVIO v1</b><span>API oficial do CV</span></li>
+        <li><b>100%</b><span>bidirecional</span></li>
+        <li><b>Tempo real</b><span>sem intermediários</span></li>
+      </ul>
+    </div>
+
+    <div class="hv" aria-hidden="true">
+      <div class="hv__floor"></div>
+      <div class="hv__phone" data-mia-phone id="miaPhone"></div>
+      <div class="hv__cv glass cvcard" id="cvCard">
+        <div class="cvcard__h">
+          <svg class="sy"><use href="#s-cv"/></svg>
+          <div class="t">Lead no CV<small data-cv="sub">Aguardando conversa</small></div>
+          <span class="now">ao vivo</span>
+        </div>
+        <div class="stages">
+          <div class="stages__bar" data-cv="bar"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="stages__lb"><span>Estágio do funil</span><b class="is-empty" data-cv="stage">—</b></div>
+        </div>
+        <dl class="kv">
+          <dt>Perfil</dt><dd class="is-empty" data-cv="perfil">—</dd>
+          <dt>Imóvel</dt><dd class="is-empty" data-cv="imovel">—</dd>
+          <dt>Visita</dt><dd class="is-empty" data-cv="visita">—</dd>
+          <dt>Consultor</dt><dd class="is-empty" data-cv="consultor">—</dd>
+        </dl>
+        <div class="cvcard__f" data-cv="foot"><svg><use href="#i-chat"/></svg><span><b data-cv="hist">0</b> mensagens no Comunicador</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 · A INTEGRAÇÃO ================= -->
+<section class="sec intg" id="integracao" aria-labelledby="h-intg">
+  <div class="grid-bg"></div><div class="glow glow--a"></div>
+  <div class="wrap">
+    <p class="kicker" data-r>O que é a integração</p>
+    <h2 class="h2" id="h-intg" data-r style="--d:.08s"><span class="ln">Morada.ai e CV conectados</span><span class="ln"><b class="hl">de ponta a ponta.</b></span></h2>
+    <p class="lead" data-r style="--d:.16s">Uma integração construída sobre a API oficial do CV. O que acontece na conversa com a MIA aparece no CV, e o que o seu time registra no CV volta para a Morada. Sem planilha e sem ferramenta no meio.</p>
+
+    <div class="hub" data-r style="--d:.2s">
+      <svg class="hub__lines" viewBox="0 0 1040 480" aria-hidden="true">
+        <g fill="none" stroke="rgba(120,175,255,.5)" stroke-width="1.5">
+          <path id="ln1" vector-effect="non-scaling-stroke" d="M300 120 H334 Q350 120 350 136 V206 Q350 222 366 222 H376"/>
+          <path id="ln2" vector-effect="non-scaling-stroke" d="M300 360 H334 Q350 360 350 344 V274 Q350 258 366 258 H376"/>
+          <path id="ln3" vector-effect="non-scaling-stroke" d="M740 120 H706 Q690 120 690 136 V206 Q690 222 674 222 H664"/>
+          <path id="ln4" vector-effect="non-scaling-stroke" d="M740 360 H706 Q690 360 690 344 V274 Q690 258 674 258 H664"/>
+        </g>
+        <g fill="#0B1A3D" stroke="#3C9CFF" stroke-width="1.5">
+          <circle cx="300" cy="120" r="4.5"/><circle cx="300" cy="360" r="4.5"/><circle cx="740" cy="120" r="4.5"/><circle cx="740" cy="360" r="4.5"/>
+        </g>
+        <g fill="url(#pulseG)">
+          <circle r="7"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#ln1"/></animateMotion></circle>
+          <circle r="7"><animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#ln2"/></animateMotion></circle>
+          <circle r="7"><animateMotion dur="2.6s" begin=".6s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#ln3"/></animateMotion></circle>
+          <circle r="7"><animateMotion dur="2.6s" begin="1.9s" repeatCount="indefinite"><mpath href="#ln4"/></animateMotion></circle>
+        </g>
+      </svg>
+
+      <div class="orb" aria-hidden="true">
+        <div class="orb__halo"></div>
+        <svg class="orb__l" viewBox="0 0 200 200">
+          <g id="orbDust" fill="#BFE3FF"></g>
+          <circle cx="100" cy="100" r="74" fill="#1E6BFF" opacity=".55" filter="url(#glowL)"/>
+          <circle cx="100" cy="100" r="72" fill="url(#orbFill)"/>
+        </svg>
+        <video class="orb__vid" muted loop playsinline preload="none" poster="assets/mia/morada-icone.jpg" data-src="assets/mia/morada-icone.mp4"></video>
+        <!-- cada fio gira como camada própria (transform na GPU, sem repintar filtro) -->
+        <svg class="orb__l sw" style="--s:22s" viewBox="0 0 200 200"><g fill="none" stroke="url(#swGrad)" transform="rotate(-24 100 100)"><ellipse cx="100" cy="100" rx="66" ry="24" stroke-width="4" opacity=".25"/><ellipse cx="100" cy="100" rx="66" ry="24" stroke-width="1.5"/></g></svg>
+        <svg class="orb__l sw sw--r" style="--s:28s" viewBox="0 0 200 200"><g fill="none" stroke="url(#swGrad)" transform="rotate(18 100 100)"><ellipse cx="100" cy="100" rx="58" ry="40" stroke-width="3.5" opacity=".2"/><ellipse cx="100" cy="100" rx="58" ry="40" stroke-width="1.1"/></g></svg>
+        <svg class="orb__l sw" style="--s:16s" viewBox="0 0 200 200"><g fill="none" stroke="url(#swGrad)" transform="rotate(62 100 100)"><ellipse cx="100" cy="100" rx="69" ry="14" stroke-width="5" opacity=".25"/><ellipse cx="100" cy="100" rx="69" ry="14" stroke-width="1.8"/></g></svg>
+        <svg class="orb__l sw sw--r" style="--s:34s" viewBox="0 0 200 200"><g fill="none" stroke="url(#swGrad)" transform="rotate(-40 100 100)"><ellipse cx="100" cy="100" rx="50" ry="64" stroke-width="3" opacity=".2"/><ellipse cx="100" cy="100" rx="50" ry="64" stroke-width="1"/></g></svg>
+        <svg class="orb__l sw" style="--s:40s" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="68" ry="46" fill="none" stroke="url(#swGrad)" stroke-width=".8" transform="rotate(100 100 100)"/></svg>
+        <svg class="orb__l" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="72" fill="url(#orbRim)"/>
+          <circle cx="100" cy="100" r="72" fill="none" stroke="#A8DAFF" stroke-width="1" opacity=".9" filter="url(#glow)"/>
+        </svg>
+        <div class="orb__lock">
+          <svg class="b"><use href="#s-ai"/></svg>
+          <svg class="sync"><use href="#i-sync"/></svg>
+          <svg class="b"><use href="#s-cv"/></svg>
+        </div>
+      </div>
+
+      <article class="hub__card hub__card--tl glass">
+        <h3 class="hub__t"><svg aria-hidden="true"><use href="#i-shield"/></svg>API oficial</h3>
+        <p>Construída sobre a CVIO v1, a API oficial do CV.</p>
+        <div class="hub__x chips">
+          <span class="chip chip--on"><svg aria-hidden="true"><use href="#i-check"/></svg>CVIO v1</span>
+          <span class="chip"><svg aria-hidden="true"><use href="#i-check"/></svg>Integração oficial</span>
+        </div>
+      </article>
+      <article class="hub__card hub__card--bl glass">
+        <h3 class="hub__t"><svg aria-hidden="true"><use href="#i-swap"/></svg>100% bidirecional</h3>
+        <p>Os dados vão e voltam entre as duas plataformas.</p>
+        <div class="hub__x flows">
+          <div class="flow"><b>Morada <svg aria-hidden="true"><use href="#i-arrow"/></svg> CV</b>Lead, conversa e qualificação</div>
+          <div class="flow"><b>CV <svg aria-hidden="true"><use href="#i-arrow"/></svg> Morada</b>Visita, estágio e dono do lead</div>
+        </div>
+      </article>
+      <article class="hub__card hub__card--tr glass">
+        <h3 class="hub__t"><svg aria-hidden="true"><use href="#i-bolt"/></svg>Tempo real</h3>
+        <p>Cada evento chega ao CV na hora em que acontece.</p>
+        <ul class="hub__x feed">
+          <li>Lead qualificado pela MIA<em>agora</em></li>
+          <li>Card criado no estágio certo<em>agora</em></li>
+          <li>Corretor da fila notificado<em>agora</em></li>
+        </ul>
+      </article>
+      <article class="hub__card hub__card--br glass">
+        <h3 class="hub__t"><svg aria-hidden="true"><use href="#i-link"/></svg>Sem intermediários</h3>
+        <p>Conexão direta entre Morada.ai e CV, sem middleware.</p>
+        <div class="hub__x direct" aria-hidden="true">
+          <svg class="b"><use href="#s-ai"/></svg>
+          <span class="wire"><i></i></span>
+          <svg class="b"><use href="#s-cv"/></svg>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 · BENEFÍCIOS ================= -->
+<section class="sec ben" id="beneficios" aria-labelledby="h-ben">
+  <div class="grid-bg"></div><div class="glow glow--a"></div>
+  <div class="wrap">
+    <div class="ben__head">
+      <div>
+        <p class="kicker" data-r>Benefícios</p>
+        <h2 class="h2" id="h-ben" data-r style="--d:.08s"><span class="ln">O que muda para quem usa</span><span class="ln"><b class="hl">Morada + CV.</b></span></h2>
+      </div>
+      <p class="lead" data-r style="--d:.16s">Da primeira mensagem no WhatsApp à avaliação depois da visita, o lead percorre uma jornada só, registrada onde o seu time já trabalha: no CV.</p>
+    </div>
+
+    <div class="ben__grid" id="benGrid" data-r style="--d:.22s">
+      <article class="bcard is-active" tabindex="0">
+        <span class="bcard__n">01.</span>
+        <span class="bcard__ic" aria-hidden="true"><svg><use href="#i-user"/></svg></span>
+        <h3>Qualificação antes do corretor</h3>
+        <p>O lead chega com intenção, capacidade financeira e produto de interesse já mapeados, permitindo que o corretor comece do meio, não do zero.</p>
+        <span class="bcard__tag">Intenção · renda · produto</span>
+      </article>
+      <article class="bcard" tabindex="0">
+        <span class="bcard__n">02.</span>
+        <span class="bcard__ic" aria-hidden="true"><svg><use href="#i-chat"/></svg></span>
+        <h3>Histórico e contexto</h3>
+        <p>A conversa da MIA (texto, áudio e imagem) acompanha o lead até o Comunicador do CV, garantindo que nada se perca na transferência.</p>
+        <span class="bcard__tag">Texto · áudio · imagem</span>
+      </article>
+      <article class="bcard" tabindex="0">
+        <span class="bcard__n">03.</span>
+        <span class="bcard__ic" aria-hidden="true"><svg><use href="#i-funnel"/></svg></span>
+        <h3>Lead no lugar certo</h3>
+        <p>Card posicionado no estágio correto do funil, com atribuição que respeita as filas por empreendimento e o dono do lead.</p>
+        <span class="bcard__tag">Funil · filas · dono do lead</span>
+      </article>
+      <article class="bcard" tabindex="0">
+        <span class="bcard__n">04.</span>
+        <span class="bcard__ic" aria-hidden="true"><svg><use href="#i-star"/></svg></span>
+        <h3>Jornada contínua <span style="white-space:nowrap">pós-visita</span></h3>
+        <p>A visita registrada no CV dispara automaticamente a coleta de NPS e o registro da avaliação na timeline.</p>
+        <span class="bcard__tag">Visita · NPS · timeline</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 · COMO FUNCIONA ================= -->
+<section class="sec how" id="como-funciona" aria-labelledby="h-how">
+  <div class="grid-bg"></div><div class="glow glow--a"></div>
+  <div class="wrap">
+    <div class="fv" aria-hidden="true" data-r>
+      <svg class="fv__svg" viewBox="0 0 560 560">
+        <path d="M-40 470 C20 470 50 340 110 340 C146 340 164 380 200 380 C236 380 254 290 290 290 C322 290 338 300 370 300 C402 300 418 200 450 200 C518 200 552 120 620 120" fill="none" stroke="#0073FF" stroke-width="10" opacity=".35" filter="url(#glowL)"/>
+        <path d="M-40 470 C20 470 50 340 110 340 C146 340 164 380 200 380 C236 380 254 290 290 290 C322 290 338 300 370 300 C402 300 418 200 450 200 C518 200 552 120 620 120" fill="none" stroke="url(#curveGrad)" stroke-width="2.6" stroke-linecap="round"/>
+        <g stroke="rgba(2,207,255,.35)" stroke-width="1" stroke-dasharray="3 5">
+          <path d="M110 316 V282"/><path d="M290 314 V386"/><path d="M450 176 V150"/>
+        </g>
+        <g filter="url(#glow)">
+          <circle cx="110" cy="340" r="24" fill="#0073FF"/><circle cx="290" cy="290" r="24" fill="#0B8BFF"/><circle cx="450" cy="200" r="24" fill="#02CFFF"/>
+        </g>
+        <g fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1"><circle cx="110" cy="340" r="31"/><circle cx="290" cy="290" r="31"/><circle cx="450" cy="200" r="31"/></g>
+        <use href="#i-chat" x="98" y="328" width="24" height="24" color="#fff"/>
+        <use href="#i-swap" x="278" y="278" width="24" height="24" color="#fff"/>
+        <use href="#i-star" x="438" y="188" width="24" height="24" color="#04122E"/>
+      </svg>
+      <svg class="fv__svg" viewBox="0 0 560 560">
+        <path id="curve" d="M-40 470 C20 470 50 340 110 340 C146 340 164 380 200 380 C236 380 254 290 290 290 C322 290 338 300 370 300 C402 300 418 200 450 200 C518 200 552 120 620 120" fill="none"/>
+        <circle r="9" fill="url(#pulseG)"><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#curve"/></animateMotion></circle>
+      </svg>
+      <div class="fcard fcard--1 glass">
+        <p class="fcard__l">01 · MIA no WhatsApp</p>
+        <p class="fcard__v">Lead qualificado</p>
+        <div class="chips"><span class="chip chip--on">Silêncio</span><span class="chip">Natureza</span><span class="chip">Família</span></div>
+      </div>
+      <div class="fcard fcard--2 glass">
+        <p class="fcard__l">02 · Comunicador do CV</p>
+        <p class="fcard__v">Histórico completo</p>
+        <div class="media"><span><svg><use href="#i-chat"/></svg>16 mensagens</span><span><svg><use href="#i-img"/></svg>3 fotos</span><span><svg><use href="#i-check"/></svg>visita marcada</span></div>
+      </div>
+      <div class="fcard fcard--3 glass">
+        <p class="fcard__l">03 · Pós-visita</p>
+        <ul class="tl">
+          <li><svg><use href="#i-check"/></svg>Visita registrada no CV</li>
+          <li><svg><use href="#i-check"/></svg>Pesquisa de NPS enviada</li>
+          <li><svg><use href="#i-check"/></svg>Avaliação na timeline<b>9</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="how__txt">
+      <p class="kicker" data-r>Como funciona</p>
+      <h2 class="h2" id="h-how" data-r style="--d:.08s"><span class="ln">Três fluxos,</span><span class="ln"><b class="hl">uma jornada só.</b></span></h2>
+      <ol class="steps">
+        <li class="step" data-r style="--d:.14s">
+          <span class="step__n">1</span>
+          <div><h3>Atendimento e qualificação pela MIA</h3><p>A MIA responde na hora no WhatsApp, entende texto, áudio e imagem e mapeia intenção, capacidade financeira e produto de interesse.</p></div>
+        </li>
+        <li class="step" data-r style="--d:.2s">
+          <span class="step__n">2</span>
+          <div><h3>Handoff pelo Comunicador Oficial do CV</h3><p>O lead entra no CV no estágio certo, na fila do empreendimento, e a conversa continua pelo Comunicador com todo o histórico da MIA.</p></div>
+        </li>
+        <li class="step" data-r style="--d:.26s">
+          <span class="step__n">3</span>
+          <div><h3>Pós-visita com NPS automático</h3><p>Registrou a visita no CV, a coleta de NPS começa sozinha, e a avaliação volta para a timeline do lead.</p></div>
+        </li>
+      </ol>
+      <div class="how__cta" data-r style="--d:.32s">
+        <a class="btn btn--primary" href="#guia" data-cta="como-funciona"><svg aria-hidden="true"><use href="#i-down"/></svg>Baixar o guia</a>
+        <a class="link" data-wa="como-funciona">Ficou com dúvida? Fale com a MIA<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 · GUIA + CTA FINAL ================= -->
+<section class="sec guia" id="guia" aria-labelledby="h-guia">
+  <div class="grid-bg"></div><div class="glow glow--a"></div>
+  <div class="wrap">
+    <div class="guia__grid">
+      <div class="cover-wrap" data-r><div data-guia-livro></div></div>
+
+      <div>
+        <p class="kicker" data-r>Material gratuito</p>
+        <h2 class="h2" id="h-guia" data-r style="--d:.08s"><span class="ln">Guia de boas práticas</span><span class="ln"><b class="hl">Morada.ai + CV.</b></span></h2>
+        <p class="lead" data-r style="--d:.14s">O passo a passo para tirar o máximo da integração: da qualificação pela MIA ao handoff no Comunicador e à jornada depois da visita.</p>
+
+        <div class="form glass" data-r style="--d:.2s">
+          <form id="guiaForm" novalidate>
+            <p class="form__t">Receba o guia agora</p>
+            <div class="fields">
+              <div class="fld"><label for="f-nome">Nome <span>*</span></label><input id="f-nome" name="firstname" type="text" autocomplete="given-name" placeholder="Como podemos te chamar?" required></div>
+              <div class="fld"><label for="f-empresa">Empresa <span>*</span></label><input id="f-empresa" name="company" type="text" autocomplete="organization" placeholder="Nome da incorporadora" required></div>
+              <div class="fld"><label for="f-email">E-mail corporativo <span>*</span></label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required></div>
+              <div class="fld"><label for="f-tel">WhatsApp <span>*</span></label><input id="f-tel" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(00) 00000-0000" required></div>
+            </div>
+            <button class="btn btn--primary" type="submit" id="guiaBtn"><svg aria-hidden="true"><use href="#i-down"/></svg><span>Baixar o guia</span></button>
+            <p class="form__legal">Ao enviar, você concorda com a <a href="https://morada.ai/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a> da Morada.ai.</p>
+          </form>
+          <div class="form__ok" id="guiaOk" hidden>
+            <span class="ic"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+            <h3 tabindex="-1" id="guiaOkT">Pronto! Seu guia está liberado.</h3>
+            <p>Clique abaixo para baixar o PDF.</p>
+            <a class="btn btn--primary" id="guiaDl" href="#" download><svg aria-hidden="true"><use href="#i-down"/></svg>Baixar o guia (PDF)</a><br>
+            <a class="link" data-wa="form-sucesso">Quer ver na prática? Fale com a MIA<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final" data-r>
+      <svg class="final__graf" viewBox="0 0 358.7 421.13" aria-hidden="true"><use href="#s-a" width="358.7" height="421.13"/></svg>
+      <div style="position:relative">
+        <p class="kicker">Prefere ver funcionando?</p>
+        <h2 class="h2"><span class="ln">Converse com a MIA</span><span class="ln"><b class="hl">agora, no WhatsApp.</b></span></h2>
+        <p class="lead">É a mesma IA que vai atender os seus leads. Pergunte como ela qualifica e como o lead chega no CV.</p>
+      </div>
+      <a class="btn btn--white" data-wa="cta-final"><svg class="wa" aria-hidden="true"><use href="#i-wa"/></svg>Falar com a MIA no WhatsApp</a>
+    </div>
+
+    <footer class="foot">
+      <img src="assets/marca-morada.svg" alt="Morada.ai" width="107" height="20">
+      <span>© 2026 Morada.ai. Todos os direitos reservados.</span>
+      <nav aria-label="Rodapé"><a href="https://morada.ai/" target="_blank" rel="noopener">morada.ai</a><a href="https://morada.ai/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a></nav>
+    </footer>
+  </div>
+</section>
+
+</main>
+
+<div class="mcta" id="mcta">
+  <a class="btn btn--primary" href="#guia" data-cta="mobile-fixo"><svg aria-hidden="true"><use href="#i-down"/></svg>Baixar o guia</a>
+  <a class="btn btn--ghost" data-wa="mobile-fixo" aria-label="Falar com a MIA no WhatsApp"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>
+</div>
+
+<script src="assets/mia-phone.js"></script>
+<script src="assets/guia-livro.js"></script>
+<script>
+/* ==========================================================
+   CONFIGURAÇÃO — o dev ajusta só este bloco
+   ========================================================== */
+var LP_CONFIG = {
+  HUBSPOT_PORTAL_ID: '41468942',
+  HUBSPOT_FORM_ID: '',                  // PENDENTE: GUID do formulário "Guia Morada + CV" no HubSpot. Vazio = envio simulado (só para teste).
+  GUIA_URL: 'assets/guia-boas-praticas-morada-cv.pdf', // PENDENTE: PDF final do guia
+  WHATSAPP: '5531980265682',            // mesmo número da MIA no site morada.ai
+  WHATSAPP_TEXT: 'Olá, MIA! Vim pela página da integração Morada.ai + CV e quero saber mais.',
+  UTM_CAMPAIGN_PADRAO: 'cv-aracaju',
+  CANAL: 'LP Integração CV',
+  PONTO_CONVERSAO: 'lp_cv_guia_download',
+  GTM_ID: 'GTM-WKLLFZGF',               // mesmo container do morada.ai
+  HOSTS_PRODUCAO: /(^|\.)morada\.ai$/i  // GTM e HubSpot só carregam no domínio real
+};
+
+(function () {
+  var C = LP_CONFIG, d = document, root = d.documentElement;
+  root.classList.add('js');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isProd = C.HOSTS_PRODUCAO.test(location.hostname);
+
+  /* ---------- tags (GTM + HubSpot), sem duplicar se o tema já carrega ---------- */
+  window.dataLayer = window.dataLayer || [];
+  if (isProd && C.GTM_ID && !d.querySelector('script[src*="googletagmanager.com/gtm.js"]')) {
+    window.dataLayer.push({'gtm.start': Date.now(), event: 'gtm.js'});
+    var g = d.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtm.js?id=' + C.GTM_ID; d.head.appendChild(g);
+  }
+  if (isProd && !d.querySelector('script[src*="js.hs-scripts.com"]')) {
+    var h = d.createElement('script'); h.async = true; h.defer = true; h.id = 'hs-script-loader'; h.src = 'https://js.hs-scripts.com/' + C.HUBSPOT_PORTAL_ID + '.js'; d.body.appendChild(h);
+  }
+  function track(ev, p) { var o = {event: ev, lp: 'integracao-morada-cv'}; for (var k in p) o[k] = p[k]; window.dataLayer.push(o); }
+
+  /* ---------- UTMs (mesma lógica e chaves do morada.ai: sessão de 30 min) ---------- */
+  var UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'], TTL = 30 * 60 * 1000;
+  try {
+    var q = new URLSearchParams(location.search), got = false;
+    UTM.forEach(function (k) { var v = q.get(k); if (v) { sessionStorage.setItem('morada_' + k, v); got = true; } });
+    if (got) sessionStorage.setItem('morada_utm_ts', String(Date.now()));
+  } catch (e) {}
+  function utm(k) {
+    try {
+      var v = new URLSearchParams(location.search).get(k); if (v) return v;
+      var ts = parseInt(sessionStorage.getItem('morada_utm_ts') || '0', 10);
+      if (ts && Date.now() - ts <= TTL) return sessionStorage.getItem('morada_' + k) || '';
+    } catch (e) {}
+    return '';
+  }
+  function utmAll() { var o = {}; UTM.forEach(function (k) { o[k] = utm(k); }); if (!o.utm_campaign) o.utm_campaign = C.UTM_CAMPAIGN_PADRAO; return o; }
+
+  /* ---------- WhatsApp + CTAs ---------- */
+  var waHref = 'https://wa.me/' + C.WHATSAPP + '?text=' + encodeURIComponent(C.WHATSAPP_TEXT);
+  d.querySelectorAll('[data-wa]').forEach(function (a) {
+    a.href = waHref; a.target = '_blank'; a.rel = 'noopener';
+    a.addEventListener('click', function () { track('lp_cv_whatsapp_click', {cta_posicao: a.getAttribute('data-wa'), utm_campaign: utmAll().utm_campaign}); });
+  });
+  d.querySelectorAll('[data-cta]').forEach(function (a) {
+    a.addEventListener('click', function () { track('lp_cv_cta_click', {cta_posicao: a.getAttribute('data-cta')}); });
+  });
+
+  /* ---------- nav ---------- */
+  var nav = d.getElementById('nav');
+  function onScroll() { nav.classList.toggle('is-scrolled', window.scrollY > 12); }
+  onScroll(); window.addEventListener('scroll', onScroll, {passive: true});
+
+  /* ---------- reveal + rolagens ---------- */
+  var hero = d.getElementById('inicio');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    }, {threshold: .14, rootMargin: '0px 0px -6% 0px'});
+    d.querySelectorAll('[data-r]').forEach(function (el) { io.observe(el); });
+
+    var dots = d.querySelectorAll('.dots a');
+    var so = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        dots.forEach(function (a) { a.classList.toggle('is-on', a.getAttribute('href') === '#' + e.target.id); });
+      });
+    }, {rootMargin: '-48% 0px -48% 0px'});
+    d.querySelectorAll('main > section').forEach(function (s) { so.observe(s); });
+
+    /* pausa animações das rolagens fora da tela (CPU/bateria no celular) */
+    var po = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        e.target.classList.toggle('is-off', !e.isIntersecting);
+        e.target.querySelectorAll('svg').forEach(function (s) {
+          if (!s.pauseAnimations) return;
+          if (e.isIntersecting && !reduce) s.unpauseAnimations(); else s.pauseAnimations();
+        });
+        /* ícone animado do orbe: carrega só perto da tela, toca em loop, pausa fora dela */
+        e.target.querySelectorAll('video[data-src]').forEach(function (v) {
+          if (e.isIntersecting && !reduce) {
+            if (!v.src) { v.src = v.getAttribute('data-src'); v.preload = 'auto'; }
+            var p = v.play(); if (p && p.catch) p.catch(function () {});
+          } else if (!v.paused) v.pause();
+        });
+      });
+    }, {rootMargin: '120px 0px'});
+    d.querySelectorAll('main > section').forEach(function (s) { po.observe(s); });
+    d.addEventListener('visibilitychange', function () {
+      if (d.visibilityState !== 'visible' || reduce) return;
+      d.querySelectorAll('main > section:not(.is-off) video[src]').forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+    });
+
+    var mcta = d.getElementById('mcta'), vis = {};
+    var mo = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { vis[e.target.id] = e.isIntersecting; });
+      mcta.classList.toggle('is-on', !vis.inicio && !vis.guia);
+    }, {threshold: 0});
+    mo.observe(hero); mo.observe(d.getElementById('guia'));
+  } else {
+    d.querySelectorAll('[data-r]').forEach(function (el) { el.classList.add('is-in'); });
+  }
+
+  /* ---------- card do CV acompanha a conversa do celular (assets/mia-phone.js) ---------- */
+  var mia = d.getElementById('miaPhone'), cv = d.getElementById('cvCard');
+  if (mia && cv) {
+    var cq = function (k) { return cv.querySelector('[data-cv="' + k + '"]'); }, bars = cq('bar').children;
+    var setv = function (k, v) {
+      var el = cq(k); if (el.textContent === v) return;
+      el.textContent = v; el.classList.toggle('is-empty', v === '—');
+      el.classList.remove('is-new'); void el.offsetWidth; el.classList.add('is-new');
+    };
+    var stage = function (n, label) { for (var i = 0; i < bars.length; i++) bars[i].classList.toggle('on', i < n); setv('stage', label); };
+    var STEPS = {
+      inicio: function () { cv.classList.add('is-on'); setv('sub', 'Carla · atendida pela MIA'); stage(1, 'Em atendimento'); },
+      qualificado: function () { stage(2, 'Qualificado'); setv('perfil', 'Silêncio · natureza'); },
+      imovel: function () { setv('imovel', 'Enviado com fotos'); },
+      visita: function () { stage(3, 'Visita agendada'); setv('visita', 'Amanhã, 17:30'); },
+      consultor: function () { setv('consultor', 'Rafael'); },
+      fim: function () { cv.classList.add('is-done'); }
+    };
+    mia.addEventListener('mia:step', function (e) { setv('hist', String(e.detail.count)); if (STEPS[e.detail.id]) STEPS[e.detail.id](); });
+    mia.addEventListener('mia:reset', function () {
+      cv.classList.remove('is-on', 'is-done'); stage(0, '—');
+      ['perfil', 'imovel', 'visita', 'consultor'].forEach(function (k) { setv(k, '—'); });
+      setv('sub', 'Aguardando conversa'); setv('hist', '0');
+    });
+  }
+
+  /* ---------- benefícios: destaque acompanha o hover/foco ---------- */
+  var cards = d.querySelectorAll('.bcard');
+  function activate(c) { cards.forEach(function (x) { x.classList.toggle('is-active', x === c); }); }
+  cards.forEach(function (c) {
+    c.addEventListener('mouseenter', function () { activate(c); });
+    c.addEventListener('focus', function () { activate(c); });
+    c.addEventListener('click', function () { activate(c); });
+  });
+
+  /* ---------- poeira do orbe ---------- */
+  var dust = d.getElementById('orbDust'), seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+  if (dust) for (var i = 0; i < 70; i++) {
+    var a = rnd() * Math.PI * 2, r = 60 + Math.pow(rnd(), 1.6) * 40;
+    var c = d.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', (100 + Math.cos(a) * r).toFixed(1)); c.setAttribute('cy', (100 + Math.sin(a) * r).toFixed(1));
+    c.setAttribute('r', (.3 + rnd() * .7).toFixed(2)); c.setAttribute('opacity', (.2 + rnd() * .7).toFixed(2));
+    dust.appendChild(c);
+  }
+  if (reduce) d.querySelectorAll('svg').forEach(function (s) { if (s.pauseAnimations) s.pauseAnimations(); });
+
+  /* ---------- telefone: máscara leve ---------- */
+  var tel = d.getElementById('f-tel');
+  tel.addEventListener('input', function () {
+    var n = tel.value.replace(/\D/g, '');
+    if (n.length > 11 && n.indexOf('55') === 0) n = n.slice(2);
+    n = n.slice(0, 11);
+    var o = n;
+    if (n.length > 2) o = '(' + n.slice(0, 2) + ') ' + n.slice(2);
+    if (n.length > 6) o = '(' + n.slice(0, 2) + ') ' + n.slice(2, n.length - 4) + '-' + n.slice(n.length - 4);
+    tel.value = o;
+  });
+
+  /* ---------- formulário do guia → HubSpot ---------- */
+  var form = d.getElementById('guiaForm'), btn = d.getElementById('guiaBtn'), ok = d.getElementById('guiaOk');
+  d.getElementById('guiaDl').href = C.GUIA_URL;
+  function cookie(n) { var m = d.cookie.match('(^|;) ?' + n + '=([^;]*)(;|$)'); return m ? m[2] : null; }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (tel.value.replace(/\D/g, '').length < 10) tel.setCustomValidity('Informe o WhatsApp com DDD.'); else tel.setCustomValidity('');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+
+    var nome = form.firstname.value.trim(), u = utmAll();
+    var fields = [
+      {name: 'firstname', value: nome},
+      {name: 'email', value: form.email.value.trim()},
+      {name: 'phone', value: form.phone.value.trim()},
+      {name: 'company', value: form.company.value.trim()},
+      {name: 'morada_last_touch_channel', value: C.CANAL},
+      {name: 'morada_last_touch_conversion_point', value: C.PONTO_CONVERSAO},
+      {name: 'morada_last_touch_datetime', value: new Date().toISOString()},
+      {name: 'morada_last_touch_landing_url', value: location.href},
+      {name: 'morada_last_touch_utm_referrer', value: d.referrer || ''}
+    ];
+    UTM.forEach(function (k) { fields.push({name: 'morada_last_touch_' + k, value: u[k]}); });
+
+    btn.disabled = true; btn.querySelector('span').textContent = 'Enviando…';
+    function liberar(status) {
+      track('lp_cv_guia_submit', {envio: status, utm_source: u.utm_source, utm_medium: u.utm_medium, utm_campaign: u.utm_campaign, utm_content: u.utm_content});
+      form.hidden = true; ok.hidden = false;
+      d.getElementById('guiaOkT').textContent = 'Pronto, ' + nome.split(' ')[0] + '! Seu guia está liberado.';
+      d.getElementById('guiaOkT').focus();
+    }
+    if (!C.HUBSPOT_FORM_ID) { console.warn('[LP Morada+CV] HUBSPOT_FORM_ID vazio: envio simulado, nenhum dado saiu da página.', fields); setTimeout(function () { liberar('simulado'); }, 450); return; }
+
+    fetch('https://api.hsforms.com/submissions/v3/integration/submit/' + C.HUBSPOT_PORTAL_ID + '/' + C.HUBSPOT_FORM_ID, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({submittedAt: Date.now(), fields: fields, context: {hutk: cookie('hubspotutk'), pageUri: location.href, pageName: d.title}})
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { console.error('[LP Morada+CV] HubSpot recusou o envio', r.status, t); track('lp_cv_guia_erro', {status: r.status}); liberar('erro_' + r.status); });
+      liberar('ok');
+    }).catch(function (err) {
+      console.error('[LP Morada+CV] Falha de rede no envio', err); track('lp_cv_guia_erro', {status: 'rede'}); liberar('erro_rede');
+    });
+  });
+})();
+</script>
+</body>
+</html>

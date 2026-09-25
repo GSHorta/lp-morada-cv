@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celular MIA · Conversa</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/mia-phone.css">
+<style>
+  html,body{height:100%;margin:0}
+  body{display:grid;place-items:center;overflow:hidden;background:radial-gradient(55% 45% at 50% 48%,rgba(0,100,255,.28),transparent 70%),#01040F}
+  body.fundo-preto{background:#000}
+  body.fundo-verde{background:#00B140}
+  .stage{transform:scale(var(--k,1))}
+</style>
+</head>
+<body>
+  <!-- Tela separada do celular da LP. Fundos: ?fundo=preto  ?fundo=verde (chroma para edição) -->
+  <div class="stage"><div data-mia-phone></div></div>
+  <script src="assets/mia-phone.js"></script>
+  <script>
+    (function () {
+      var f = new URLSearchParams(location.search).get('fundo');
+      if (f) document.body.classList.add('fundo-' + f);
+      function fit() {
+        var k = Math.min(innerHeight * 0.88 / 640, innerWidth * 0.92 / 660, 1.8);
+        document.querySelector('.stage').style.setProperty('--k', k.toFixed(3));
+      }
+      fit(); addEventListener('resize', fit);
+    })();
+  </script>
+</body>
+</html>

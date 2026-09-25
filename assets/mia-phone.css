@@ -1,0 +1,88 @@
+/* ==========================================================
+   Celular MIA: conversa animada (réplica do vídeo "CONVERSA MIA"),
+   flip 360° no meio da conversa e órbita animada.
+   Uso: <div class="mia" data-mia-phone></div>  +  mia-phone.js
+   ========================================================== */
+.mia{--pw:288px;--ph:596px;--orbit-x:0px;position:relative;width:var(--pw);height:var(--ph);font-family:"Lato",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mia *,.mia *::before,.mia *::after{box-sizing:border-box}
+
+/* ---------- órbita ---------- */
+.mia__orbit{position:absolute;left:50%;top:50%;width:640px;max-width:none;height:640px;margin:-320px 0 0 calc(-320px + var(--orbit-x));transform:scale(var(--orbit-s,1));overflow:visible;pointer-events:none}
+.mia__orbit--back{z-index:1}
+.mia__orbit--front{z-index:3}
+
+/* ---------- aparelho (3D, espessura de celular real: 8,25 mm em 70,6 mm = ~28 px) ---------- */
+.mia{--depth:28px}
+.mia__tilt{position:absolute;inset:0;z-index:2;transform:rotate(-6deg)}
+.mia__glow{position:absolute;left:-14%;right:-14%;top:4%;bottom:4%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,115,255,.34),rgba(0,90,255,.12) 55%,transparent);pointer-events:none}
+.mia__lift{position:absolute;inset:0}
+.mia__body{position:absolute;inset:0}
+/* 3D só durante o flip: em repouso a tela fica 2D e o texto nítido */
+.mia.is-flip .mia__lift{perspective:1600px}
+.mia.is-flip .mia__body{transform-style:preserve-3d;animation:miaFlip 2.2s linear both}
+.mia.is-flip .mia__front{transform:translateZ(calc(var(--depth) / 2))}
+.mia__face{position:absolute;inset:0;border-radius:48px;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.mia__front{padding:9px;background:linear-gradient(150deg,#3D4969 0%,#141C31 20%,#0A0F1D 62%,#262F4A 100%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),inset 0 0 0 5px #04070E,0 40px 60px -30px rgba(0,0,0,.9)}
+.mia__back{transform:rotateY(180deg) translateZ(calc(var(--depth) / 2));overflow:hidden;background:radial-gradient(120% 60% at 30% 10%,rgba(80,120,220,.35),transparent 60%),linear-gradient(160deg,#2A3552 0%,#121A2E 42%,#0A0F1D 70%,#1E2742 100%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.16),inset 0 0 0 5px rgba(4,7,14,.9)}
+/* lateral: perímetro arredondado extrudado em painéis (retas + 6 fatias por canto) */
+.mia__side{position:absolute;left:50%;top:50%;height:var(--depth);margin-top:calc(var(--depth) / -2);-webkit-backface-visibility:visible;backface-visibility:visible}
+.mia__btn{position:absolute;top:22%;height:56%;border-radius:3px;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.06) 50%,rgba(255,255,255,.18));box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+@keyframes miaFlip{0%{transform:translateY(-0.0px) translateZ(0.0px) rotateX(0.00deg) rotateY(0.00deg)}5%{transform:translateY(-1.6px) translateZ(7.2px) rotateX(1.25deg) rotateY(0.18deg)}10%{transform:translateY(-3.1px) translateZ(14.2px) rotateX(2.47deg) rotateY(1.44deg)}15%{transform:translateY(-4.5px) translateZ(20.9px) rotateX(3.63deg) rotateY(4.86deg)}20%{transform:translateY(-5.9px) translateZ(27.0px) rotateX(4.70deg) rotateY(11.52deg)}25%{transform:translateY(-7.1px) translateZ(32.5px) rotateX(5.66deg) rotateY(22.50deg)}30%{transform:translateY(-8.1px) translateZ(37.2px) rotateX(6.47deg) rotateY(38.88deg)}35%{transform:translateY(-8.9px) translateZ(41.0px) rotateX(7.13deg) rotateY(61.74deg)}40%{transform:translateY(-9.5px) translateZ(43.7px) rotateX(7.61deg) rotateY(92.16deg)}45%{transform:translateY(-9.9px) translateZ(45.4px) rotateX(7.90deg) rotateY(131.22deg)}50%{transform:translateY(-10.0px) translateZ(46.0px) rotateX(8.00deg) rotateY(180.00deg)}55%{transform:translateY(-9.9px) translateZ(45.4px) rotateX(7.90deg) rotateY(228.78deg)}60%{transform:translateY(-9.5px) translateZ(43.7px) rotateX(7.61deg) rotateY(267.84deg)}65%{transform:translateY(-8.9px) translateZ(41.0px) rotateX(7.13deg) rotateY(298.26deg)}70%{transform:translateY(-8.1px) translateZ(37.2px) rotateX(6.47deg) rotateY(321.12deg)}75%{transform:translateY(-7.1px) translateZ(32.5px) rotateX(5.66deg) rotateY(337.50deg)}80%{transform:translateY(-5.9px) translateZ(27.0px) rotateX(4.70deg) rotateY(348.48deg)}85%{transform:translateY(-4.5px) translateZ(20.9px) rotateX(3.63deg) rotateY(355.14deg)}90%{transform:translateY(-3.1px) translateZ(14.2px) rotateX(2.47deg) rotateY(358.56deg)}95%{transform:translateY(-1.6px) translateZ(7.2px) rotateX(1.25deg) rotateY(359.82deg)}100%{transform:translateY(-0.0px) translateZ(0.0px) rotateX(0.00deg) rotateY(360.00deg)}}
+.mia__cam{position:absolute;left:22px;top:22px;width:104px;height:104px;border-radius:30px;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 6px 18px rgba(0,0,0,.4)}
+.mia__cam i{position:absolute;width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 40% 38%,#3A4C7A 0 10%,#0B1020 30%,#02040A 62%);box-shadow:0 0 0 3px #1A2238,0 0 0 4px rgba(255,255,255,.12)}
+.mia__cam i:nth-child(1){left:9px;top:9px}.mia__cam i:nth-child(2){left:9px;top:57px}.mia__cam i:nth-child(3){left:57px;top:33px}
+.mia__cam b{position:absolute;left:66px;top:12px;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#FFF6D8,#C9B98A 60%,#6B6250)}
+.mia__logo{position:absolute;left:50%;top:50%;width:62px;height:auto;transform:translate(-50%,-50%);fill:rgba(255,255,255,.2);filter:drop-shadow(0 0 18px rgba(0,115,255,.55))}
+
+/* ---------- tela WhatsApp (escuro, cores amostradas do vídeo) ---------- */
+.wa{position:relative;height:100%;border-radius:40px;overflow:hidden;display:flex;flex-direction:column;background:#121114;color:#E9EDEF}
+.wa__island{position:absolute;top:10px;left:50%;width:88px;height:25px;margin-left:-44px;border-radius:20px;background:#000;z-index:3}
+.wa__sb{flex:none;height:42px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px 30px;background:#1E2B31;font:600 12.5px/1 "Outfit",system-ui,sans-serif}
+.wa__sb span{display:flex;align-items:center;gap:4px}
+.wa__sb svg{height:10px;width:auto;fill:#fff}
+.wa__hd{flex:none;display:flex;align-items:center;gap:8px;padding:5px 10px 8px 8px;background:#1E2B31}
+.wa__hd .bk{width:15px;height:15px;flex:none;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.wa__av{width:31px;height:31px;flex:none;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#2F8BFF,#0665C9 60%,#034C9E)}
+.wa__av svg{width:15px;height:auto;fill:#fff}
+.wa__who{flex:1;min-width:0}
+.wa__nm{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap}
+.wa__nm svg{width:12px;height:12px;flex:none}
+.wa__st{font-size:10.5px;line-height:1.3;color:#AEBAC1;transition:color .2s}
+.wa__hd .ic{width:17px;height:17px;flex:none;fill:#fff}
+.wa__view{position:relative;flex:1;overflow:hidden;background:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.2px) 0 0/14px 14px,radial-gradient(rgba(255,255,255,.025) 1px,transparent 1.2px) 7px 7px/14px 14px,#121114}
+.wa__list{position:absolute;left:0;right:0;top:0;padding:7px 8px 8px;transition:transform .55s cubic-bezier(.25,.8,.25,1),opacity .45s}
+.wa__list.is-fading{opacity:0}
+.wa__notice{margin:2px 12px 7px;padding:6px 9px;border-radius:8px;background:#1A232A;text-align:center;font-size:8.4px;line-height:1.38;color:rgba(233,237,239,.62)}
+.wa__notice b{display:block;font-weight:700;color:rgba(233,237,239,.78)}
+.wa__notice svg{display:inline-block;width:7px;height:8px;margin-right:2px;vertical-align:-1px;fill:rgba(233,237,239,.6)}
+.wa__day{display:table;margin:0 auto 5px;padding:3px 9px;border-radius:7px;background:#1D2932;font-size:9.5px;color:rgba(233,237,239,.7)}
+.wa__m{display:flex;margin-top:3px}
+.wa__m.is-first{margin-top:7px}
+.wa__m--out{justify-content:flex-end}
+.wa__b{position:relative;max-width:81%;padding:5px 7px 4px 8px;border-radius:8px;font-size:11.4px;line-height:1.36;word-wrap:break-word;animation:waIn .38s cubic-bezier(.2,.8,.3,1.15) both}
+.wa__m--in .wa__b{background:#1E2B31;transform-origin:0 0}
+.wa__m--out .wa__b{background:#005C4B;transform-origin:100% 0}
+.wa__m.is-first.wa__m--in .wa__b{border-top-left-radius:0}
+.wa__m.is-first.wa__m--out .wa__b{border-top-right-radius:0}
+.wa__m.is-first .wa__b::before{content:"";position:absolute;top:0;width:8px;height:10px;background:inherit}
+.wa__m.is-first.wa__m--in .wa__b::before{left:-7px;clip-path:polygon(0 0,100% 0,100% 100%)}
+.wa__m.is-first.wa__m--out .wa__b::before{right:-7px;clip-path:polygon(0 0,100% 0,0 100%)}
+.wa__meta{float:right;display:inline-flex;align-items:center;gap:3px;margin:5px 0 -4px 9px;font-size:8.8px;line-height:1;color:rgba(233,237,239,.58);white-space:nowrap}
+.wa__meta svg{width:14px;height:9px;fill:none;stroke:#53BDEB;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.wa__b--img{width:78%;max-width:78%;padding:3px 3px 4px}
+.wa__b--img img{display:block;width:100%;height:auto;aspect-ratio:548/306;object-fit:cover;border-radius:6px;background:#0B1A22}
+.wa__b--img .cap{display:block;padding:4px 4px 0 5px}
+.wa__typing{display:flex;gap:3px;padding:3px 2px 2px}
+.wa__typing i{width:5.5px;height:5.5px;border-radius:50%;background:rgba(233,237,239,.6);animation:waDot 1.2s infinite}
+.wa__typing i:nth-child(2){animation-delay:.18s}.wa__typing i:nth-child(3){animation-delay:.36s}
+@keyframes waIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes waDot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-2px)}}
+.wa__in{flex:none;display:flex;align-items:center;gap:6px;padding:6px 8px 17px;background:#1E2B31}
+.wa__field{flex:1;display:flex;align-items:center;gap:7px;height:32px;padding:0 10px;border-radius:16px;background:#2B3740;font-size:11.5px;color:rgba(233,237,239,.5)}
+.wa__field span{flex:1}
+.wa__field svg{width:15px;height:15px;flex:none;fill:none;stroke:rgba(233,237,239,.62);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.wa__mic{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;background:#00A685}
+.wa__mic svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+
+.mia.is-off *,.mia.is-off *::before,.mia.is-off *::after{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){.wa__b{animation:none}.wa__list{transition:none}}
